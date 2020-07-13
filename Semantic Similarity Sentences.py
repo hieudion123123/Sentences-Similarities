@@ -115,7 +115,7 @@ def word_similarity(word1, word2):
     return length_between_words(synset_wordone, synset_wordtwo) * depth_common_subsumer(synset_wordone, synset_wordtwo)
 
 
-def I(search_word):
+def interest(search_word):
     global total_words
     if total_words == 0:
         for sent in brown.sents():
@@ -154,7 +154,7 @@ def gen_sem_vec(sentence, joint_word_set):
         else:
             sim_word, beta_sim_measure = most_similar_word(joint_word, sentence)
             beta_sim_measure = 0 if beta_sim_measure <= PHI else beta_sim_measure
-        sim_measure = beta_sim_measure * I(joint_word) * I(sim_word)
+        sim_measure = beta_sim_measure * interest(joint_word) * interest(sim_word)
         semantic_vector[i] = sim_measure
         i += 1
     return semantic_vector
@@ -210,25 +210,6 @@ def main(sentence_one, sentence_two):
     sentence_similarity = (DELTA * sent_sim(sent_set_one, sent_set_two, list(joint_word_set))) + (
             (1.0 - DELTA) * word_order_similarity(sentence_one, sentence_two))
     return sentence_similarity
-
-
-def file_sem(f):
-    contents = open(f).read().strip()
-    ind_sentences = sent_tokenize(contents)
-    print(ind_sentences)
-    no_of_sentences = len(ind_sentences)
-    sent_sim_matr = np.zeros((no_of_sentences, no_of_sentences))
-    i = 0
-    print(ind_sentences)
-    while i < no_of_sentences:
-        j = i
-        while (j < no_of_sentences):
-            sent_sim_matr[i][j] = main(ind_sentences[i], ind_sentences[j])
-            sent_sim_matr[j][i] = sent_sim_matr[i][j]
-            j += 1
-        i += 1
-    return sent_sim_matr
-
 
 def intro():
     print("\nEnter the option you want:\n")
